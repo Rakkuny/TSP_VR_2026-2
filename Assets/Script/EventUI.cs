@@ -56,14 +56,19 @@ public class EventUI : MonoBehaviour
         SceneManager.LoadScene(sceneName);
     }
 
+    //Metodo para recargar de escena actual
+    public void ReloadCurrentScene() 
+    {
+        Scene currentScene = SceneManager.GetActiveScene();
+        SceneManager.LoadScene(currentScene.buildIndex);
+    }
 
-    //metodo, aumena el indice y cambia entre paneles
-    //metodo para cambiar entre paneles
-    public void CycleObject() 
+    //metodo para cambiar entre paneles, aumena el indice y cambia entre paneles
+    public void CycleObject(int direction) 
     {
         //operacion del modulo: permite establecer un rango, dice si una division es perfecta o no, si es perfecta regresa a 0
         //incrementa el indice y vuelve al principio
-        currentIndex = (currentIndex + 1) % listaDeInstrucciones.Count; //cambia el indice al siguiente del actual
+        currentIndex = (currentIndex + direction + listaDeInstrucciones.Count) % listaDeInstrucciones.Count; //cambia el indice al siguiente del actual
 
         //Actualizar la visibilidad
         UpdateVisibilty();
@@ -71,11 +76,21 @@ public class EventUI : MonoBehaviour
 
     //metodo para actualizar el texto mostrado
     public void UpdateText()
-    {
-        if(mensajesDeInstrucciones.Count > 0) 
+    {   //verificar si hay mensajes en la lista de texto y si tiene donde mostrarlo
+        if(mensajesDeInstrucciones.Count > 0 && textMeshProUGUI != null) 
         {
-
+            textMeshProUGUI.text = mensajesDeInstrucciones[currentIndex];
         }
+    }
+
+
+    public void CycleText(int direction) {
+        //operacion del modulo: permite establecer un rango, dice si una division es perfecta o no, si es perfecta regresa a 0
+        //incrementa el indice y vuelve al principio
+        currentIndex = (currentIndex + direction + mensajesDeInstrucciones.Count) % mensajesDeInstrucciones.Count; //cambia el indice al siguiente del actual
+
+        //Actualizar la visibilidad
+        UpdateText();
     }
 
     //metodo para salir de la aplicacion 

@@ -1,4 +1,4 @@
-//ecesarias
+//Necesarias
 using UnityEngine;
 using UnityEngine.UI; //para interfaz de usuario
 using UnityEngine.Events; //par leer mov de camara
