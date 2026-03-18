@@ -622,7 +622,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bf14f83892646214aad2b7ab7d2909aa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  useSincrono: 1
+  useSincrono: 0
   useThread: 0
   useTask: 0
   useCorutine: 0
