@@ -4,6 +4,7 @@ using UnityEngine.InputSystem;
 using System.Threading;
 using Unity.VisualScripting;
 using UnityEngine.InputSystem.iOS;
+using System.IO;
 
 public class FlightThreadNOSinc : MonoBehaviour 
 {
@@ -16,7 +17,7 @@ public class FlightThreadNOSinc : MonoBehaviour
     //Control de Iteraciones, mientras mas iteraciones mas recursos consume
     public int turbulenceIterations = 1000;
 
-    //lista de vectores de posicion calculados PARA TURBULENCIA,(para turbulencia)
+    //lista de vectores de posicion calculados PARA TURBULENCIA
     private List<Vector3> turbulenceForces = new List<Vector3>();
 
     //Variables para manipular el hilo secundario
@@ -62,7 +63,8 @@ public class FlightThreadNOSinc : MonoBehaviour
         capturedTime = Time.deltaTime; //acumulativo aqui delta time
 
         //Proceso pesado en hilo secundario
-        if (!isTurbulenceRunning) {
+        if (!isTurbulenceRunning) 
+        {
             isTurbulenceRunning = true;
             stopTurbulenceThread = false;
 
@@ -79,6 +81,10 @@ public class FlightThreadNOSinc : MonoBehaviour
         //Mover la nave en Rotacion
         float yaw = movementInput.x * rotationSpeed * Time.deltaTime; //da una resta delta time
         this.transform.Rotate(0, yaw, 0);
+
+        //--------------- ACTIVIDAD 3 - Parte 1 ------------------------ Meteodo para lectura y escritura de archivos
+        //LECTURA de archivos
+        TryReadFile();
     }
 
 
@@ -109,9 +115,43 @@ public class FlightThreadNOSinc : MonoBehaviour
         //Señal en consola de inicio de hilo
         Debug.Log("iniciando simulacion de turbuencia");
 
-        //Simulacion completa
+        
+
+        //-------- ACTIVIDAD 3 --------------------
+
+        //Escritura del archivo
+        //objeto que diga que vas a escribir y donde
+        using (StreamWriter writer = new StreamWriter(filepath, false)) 
+        {
+            foreach(var force in turbulenceForces) //forces coleccion generica, para convertir a texto a escribir
+            {
+                writer.WriteLine(force.ToString());
+            }
+            writer.Flush(); //impiar memoria cached el buffer, no conviene cerrar el archivo porque habria que volver a abrirlo
+        }
+
+        Debug.Log("Archivo escrito");
+
+        //Simulacion completa; CAMBIO de lugar, pirque la simuacion esta completa tras terminar de escribir
         isTurbulenceRunning = false;
     }
+    
+    //--------------- ACTIVIDAD 3 - Parte 1 ------------------------ Meteodo para lectura y escritura de archivos
+    //ESCRITURA de archivos
+    void TryReadFile() 
+    {
+        try 
+        {
+            string content = File.ReadAllText(filepath);
+            Debug.Log("Archivo leido: " + content);
+        }
+        catch (IOException ex) 
+        {
+            Debug.LogError("Error de acceso al archivo: " + ex.Message);
+        }
+    }
+
+
     //Cerrar hilo
     private void OnDestroy() {
         //indicar el cierre del hilo secudario
