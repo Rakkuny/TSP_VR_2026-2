@@ -61,6 +61,31 @@ public class AIManager : MonoBehaviour
                 break;
             }
         }
+
+        //SI el jugador es atrapado
+        if(playerCaugth) 
+        {
+            TeleportPlayerToEntrance();
+            RelocateAllNPC();
+
+            return;
+        }
+
+        //si el jugador llego a la salia
+        if((playerPos - exit.position).sqrMagnitude < exitRangeSqr)
+        {
+            gameWon = true;
+            Debug.Log("Felicidades! Ganaste");
+        }
+
+        //lo que se debe hacer constantemente PERSECUCION
+        foreach(var agent in agents) 
+        {
+            if (agent.enabled && !agent.isStopped) 
+            {
+                agent.SetDestination(playerPos); //enemigos llendo a pos player 
+            }
+        }
     }
 
     //Metodo para llevar a player a la entrada
@@ -80,7 +105,7 @@ public class AIManager : MonoBehaviour
         Debug.Log("Teletransport: " + entrancePos);
     }
 
-    //Metodo para posiionar los enemigos
+    //Metodo para posicionar los enemigos
     void RelocateAllNPC() 
     {
         if (triangulation.vertices.Length == 0) return;
